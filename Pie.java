@@ -1,105 +1,106 @@
+//package spoj;
+
 import java.io.*;
 import java.util.Arrays;
-
-public class Main {
-  private static Reader in;
-  private static PrintWriter out;
-  
-  public static void main(String[] args) throws IOException {
-     in = new Reader();
-    out = new PrintWriter(System.out, true);
-    int T = in.nextInt();
-     Cubiod cr[] = null;
-	double low, high, volume, totalVolume;
-    while (T-- > 0) {
-      int N = in.nextInt() ;
-      low  = 100000000;
-      high = -100000000;
-      totalVolume =0;
-      int base;
-      int height;
-      int length;
-      int breadth;
-      cr = new Cubiod[N];
-      for (int i = 0; i < N; i++) {
-        base = in.nextInt();
-	height = in.nextInt();
-	length = in.nextInt();
-	breadth = in.nextInt();
-	cr[i] = new Cubiod(base, height, length*breadth);
-	if(high< base+height)
+import java.util.Comparator;
+class Jobs
+{
+	int startTime;
+	int durationTime;
+	int cost;
+	Jobs(int startTime, int durationTime, int cost )
 	{
-		high = base+height;
-	} 
-	if(low> base)
-	{
-		low = base;
+		this.startTime = startTime;
+		this.durationTime = durationTime;
+		this.cost  = cost;
 	}
-	totalVolume += cr[i].height*cr[i].area;
-      }
-	volume = in.nextInt();
-	if(volume> totalVolume)
-	{
-		out.println("OVERFLOW");
-	}
-
-       else{
-		b_seearch(cr, low, high, volume);
-	}
-    }
-  }
-
-  public static void b_seearch(Cubiod[] cr, double low, double high, double volume)
-  {
-	double mid, v;
-	while(high- low > 1e-3)
-	{
-		mid = (low + high)/2;
-		v = 0;
-		for(int i = 0; i<cr.length; i++)
-		{
-			if(cr[i].base< mid)
-			{
-				if(mid >= cr[i].height+cr[i].base)
-				{
-					v += cr[i].height*cr[i].area;
-				}else{
-					v += (mid-cr[i].base)*cr[i].area;					
-				}
-			}
-		}
-
-			if(v<volume)
-			{
-				low = mid;
-			}else 
-		{
-high = mid;
 }
-		}
+
+class jobComparator implements Comparator<Jobs>
+{
+	public int compare(Jobs a, Jobs b)
+	{
+		return a.durationTime < b.durationTime ? -1 : a.durationTime == b.durationTime ? 0 : 1;
+	}
+
 	
-		//low = Math.round(low);
-		out.printf("%.2f\n", low);
-
-  }
-
-  
-
-  
 }
 
-class Cubiod{
-	int base;	
-	int height; 
-	long area;
+public class MAIN{
+	  private static Reader in;
+	  private static PrintWriter out;
+	  public static void main(String[] args) throws IOException {
+		  in = new Reader();
+		  out = new PrintWriter(System.out, true);
+		  int T = in.nextInt();
+		  double radius[] = null;
+		  while (T-- > 0) {
+		      int N = in.nextInt() ;
+		      int F = in.nextInt();
+		      radius = new double[N];
+		      
+		      for(int i = 0; i<N; i++)
+		      {
+		    	  
+		    	radius[i] = in.nextInt();
+		      }
+		      
+		     solve(radius, F);
+		      
+	      
+	    }
+	  }
+	  
+	  public static void solve(double radius[], int F)
+	  {
+		   double pi = 3.14159265358979323846264338327950;
+		  for(int i = 0; i<radius.length; i++)
+		  {
+			  radius[i]  = radius[i]*radius[i]*pi;
+		  }
+		  Arrays.sort(radius);
+		  double low = 0;
+		  double high = radius[radius.length-1];
+		  while(high-low>1e-6)
+		  {
+			  double mid = (low+high)/2;
+			  if(ok(mid, radius, F))
+			  {
+				  low = mid;
+			  }else{
+				  high = mid;
+			  }
+		  }
+		  
+		  out.printf("%.4f\n", low);
+	  }
+	  
+	  public static boolean  ok(double mid, double[] radius, int F)
+	  {
+		  int fr = 0;
+		  if(mid == 0)
+		  {
+			  return false;
+		  }
+		  for(int i = 0; i<radius.length; i++)
+		  {
+			  fr+= (int)(radius[i]/mid);
+		  }
+		  
+		  if(fr >= F+1)
+		  {
+			  return true;
+		  }
+		  return false;
+	  }
+	  
 	
-	Cubiod(int a, int b, long c)
-	{
-		base 	=  a;
-		height  =  b;
-		area    =  c;
-	}
+	  
+
+
 }
+
+
 
 
 /** Faster input **/
